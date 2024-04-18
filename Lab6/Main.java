@@ -1,0 +1,54 @@
+//Joe Droney
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] listSizes = {10, 100, 500, 1000, 5000, 10000, 50000, 100000};
+        int iterations = 20;
+
+        // Measure time for Priority Queue Sorting
+        System.out.println("Priority Queue Sorting:");
+        for (int size : listSizes) {
+            long totalTime = 0;
+            for (int i = 0; i < iterations; i++) {
+                HeapPriorityQueue priorityQueue = new HeapPriorityQueue();
+                List<Integer> randomList = makeRandomList(size);
+                long startTime = System.nanoTime();
+                priorityQueue.sortWithPQ(randomList);
+                long endTime = System.nanoTime();
+                totalTime += (endTime - startTime);
+            }
+            long averageTime = totalTime / iterations;
+            System.out.println("Average execution time on input size " + size + ": " + averageTime + " nanoseconds");
+        }
+
+        // Measure time for Quick Sort
+        System.out.println("\nQuick Sort:");
+        for (int size : listSizes) {
+            long totalTime = 0;
+            for (int i = 0; i < iterations; i++) {
+                List<Integer> randomList = makeRandomList(size);
+                long startTime = System.nanoTime();
+                Collections.sort(randomList);
+                long endTime = System.nanoTime();
+                totalTime += (endTime - startTime);
+            }
+            long averageTime = totalTime / iterations;
+            System.out.println("Average execution time on input size " + size + ": " + averageTime + " nanoseconds");
+        }
+    }
+
+    public static List<Integer> makeRandomList(int n) {
+        List<Integer> randomList = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < n; i++) {
+            randomList.add(random.nextInt(10001)); // generates random integer between 0 and 10000 (inclusive)
+        }
+        return randomList;
+    }
+}

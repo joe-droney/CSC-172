@@ -1,0 +1,99 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class HeapPriorityQueue {
+    private List<Integer> heap;
+    private int size;
+
+    public HeapPriorityQueue() {
+        this.heap = new ArrayList<>();
+        this.size = 0;
+    }
+
+    public void sortWithPQ(List<Integer> list) {
+        // Initialize a priority queue
+        HeapPriorityQueue priorityQueue = new HeapPriorityQueue();
+
+        // Enqueue elements from the input list into the priority queue
+        for (Integer item : list) {
+            priorityQueue.insert(item);
+        }
+
+        // Dequeue elements from the priority queue and add them to a new List
+        List<Integer> sortedList = new ArrayList<>();
+        while (!priorityQueue.isEmpty()) {
+            sortedList.add(priorityQueue.remove());
+        }
+
+        // Replace the input list with the sorted list
+        list.clear();
+        list.addAll(sortedList);
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public void insert(int value) {
+        heap.add(value);
+        size++;
+        swim(size - 1);
+    }
+
+    public List<Integer> makeRandomList(int n) {
+        List<Integer> randomList = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < n; i++) {
+            randomList.add(random.nextInt(10001)); // generates random integer between 0 and 10000 (inclusive)
+        }
+        return randomList;
+    }
+
+    public int remove() {
+        if (isEmpty()) {
+            throw new IllegalStateException("Priority queue is empty. Cannot delete.");
+        }
+
+        int min = heap.get(0);
+        heap.set(0, heap.get(size - 1));
+        heap.remove(size - 1);
+        size--;
+        sink(0);
+        return min;
+    }
+
+    private void swim(int index) {
+        int parent = (index - 1) / 2;
+        while (index > 0 && heap.get(index) < heap.get(parent)) {
+            swap(index, parent);
+            index = parent;
+            parent = (index - 1) / 2;
+        }
+    }
+
+    private void sink(int index) {
+        int leftChild = 2 * index + 1;
+        int rightChild = 2 * index + 2;
+        int smallest = index;
+
+        if (leftChild < size && heap.get(leftChild) < heap.get(smallest)) {
+            smallest = leftChild;
+        }
+
+        if (rightChild < size && heap.get(rightChild) < heap.get(smallest)) {
+            smallest = rightChild;
+        }
+
+        if (smallest != index) {
+            swap(index, smallest);
+            sink(smallest);
+        }
+    }
+
+    private void swap(int i, int j) {
+        int temp = heap.get(i);
+        heap.set(i, heap.get(j));
+        heap.set(j, temp);
+    }
+}
